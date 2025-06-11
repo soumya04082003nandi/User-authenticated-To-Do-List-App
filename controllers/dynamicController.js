@@ -31,7 +31,8 @@ const handleRenderRegisterPage = async (req, res) => {
 
 //dashboard page
 const handleRenderDashboardPage = async (req, res) => {
-    res.render("dashboard");
+    const user=await userModels.findOne({email:req.user.email})
+    res.render("dashboard",{user});
 }
 
 //user creation || registration
