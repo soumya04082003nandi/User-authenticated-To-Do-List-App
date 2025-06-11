@@ -5,7 +5,8 @@ const router=express.Router();
 const {handleRenderLandingPage,
         handleRenderRegisterPage,
         handleRenderLogingPage,
-        handleRenderDashboardPage
+        handleRenderDashboardPage,
+        handleUserRegistration
 
     }=require("../controllers/dynamicController")
 
@@ -21,8 +22,13 @@ router.get("/login",handleRenderLogingPage);
 //rendering register page
 router.get("/register",handleRenderRegisterPage);
 
-
 //rendering dashboard page
 router.get("/dashboard",handleRenderDashboardPage)
+
+
+
+//user registration || user creation
+router.post("/register",handleUserRegistration);
+
 
 module.exports=router;

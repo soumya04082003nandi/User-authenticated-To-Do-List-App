@@ -3,6 +3,8 @@ const app=express();
 const path=require("path")
 const allRoutes=require("./routes/dynamicRoutes")
 const {conectDB}=require("./config/db")
+const cookieParser=require("cookie-parser");
+
 
 
 //Enviornment variable 
@@ -22,6 +24,7 @@ app.set("views",path.resolve("./views"));
 app.use(express.static('public'));
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
+app.use(cookieParser())
 
 
 
