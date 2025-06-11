@@ -1,0 +1,56 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToDo List App</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-white text-gray-800 min-w-[400px] font-sans">
+
+    <nav class="flex justify-between items-center px-6 py-4 border-b">
+        <h1 class="text-2xl font-bold text-black">ToDo List</h1>
+        <div class="space-x-4">
+            <a href="/login"
+                class="px-4 py-2 text-blue-600 border border-blue-600 rounded-lg hover:bg-blue-50 transition">Login</a>
+            <a href="/register"
+                class="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Register</a>
+        </div>
+    </nav>
+
+    <main class="flex flex-col items-center justify-center min-h-[70vh] text-center px-4">
+        <h2 class="text-4xl font-semibold mb-3 text-black">Organize Your Day Effortlessly</h2>
+        <p class="text-gray-600 mb-6">Plan, prioritize, and stay productive with your personal ToDo List App.</p>
+
+        <div class="flex flex-col sm:flex-row gap-4">
+            <a href="/dashboard" class="px-6 py-3 bg-blue-600 text-white rounded-lg hover:bg-blue-700 transition">Get
+                Started</a>
+            <a href="#features"
+                class="px-6 py-3 border border-blue-600 text-blue-600 rounded-lg hover:bg-blue-50 transition">Learn
+                More</a>
+        </div>
+    </main>
+
+    <section id="features" class="px-4 py-12 max-w-4xl mx-auto text-center">
+        <h3 class="text-xl font-semibold mb-4 text-black">Why Choose Us?</h3>
+        <ul class="grid sm:grid-cols-3 gap-6 text-left">
+            <li class="border rounded-xl p-4 shadow-sm">
+                <h4 class="font-bold text-black mb-1">🗂 Task Organization</h4>
+                <p class="text-sm text-gray-600">Easily add, edit, and remove your daily tasks.</p>
+            </li>
+            <li class="border rounded-xl p-4 shadow-sm">
+                <h4 class="font-bold text-black mb-1">🏷 Custom Labels</h4>
+                <p class="text-sm text-gray-600">Group tasks with priorities and categories.</p>
+            </li>
+            <li class="border rounded-xl p-4 shadow-sm">
+                <h4 class="font-bold text-black mb-1">📊 Track Progress</h4>
+                <p class="text-sm text-gray-600">Visualize completed and pending work clearly.</p>
+            </li>
+        </ul>
+    </section>
+
+</body>
+
+</html>
