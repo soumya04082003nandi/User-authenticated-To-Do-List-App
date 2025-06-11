@@ -78,6 +78,36 @@ const handleUserRegistration = async (req, res) => {
 
 }
 
+//Login feature
+const handleUserLogin = async (req, res) => {
+    try {
+        const { email, password } = req.body;
+        const checkUser = await userModels.findOne({ email });
+        if (!checkUser) {
+            return res.render("login", { error: 1 })
+
+        } else {
+            bcrypt.compare(password, checkUser.password, (err, result) => {
+                if (result) {
+                    const token = jwt.sign({ email: checkUser.email, userid: checkUser._id }, process.env.SECRET_KEY)
+                    res.cookie("token", token);
+                    res.status(200).redirect("/dashboard")
+                }
+                else {
+                    return res.render("login", { error: 1 })
+                }
+
+            })
+        }
+    } catch (error) {
+        res.send("something went wrong");
+        setTimeout((req, res) => {
+            res.redirect("/login");
+        }, 5000);
+    }
+
+}
+
 
 
 
@@ -86,5 +116,6 @@ module.exports = {
     handleRenderRegisterPage,
     handleRenderLogingPage,
     handleRenderDashboardPage,
-    handleUserRegistration
+    handleUserRegistration,
+    handleUserLogin
 }

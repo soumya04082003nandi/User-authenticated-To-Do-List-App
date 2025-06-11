@@ -6,10 +6,13 @@ const {handleRenderLandingPage,
         handleRenderRegisterPage,
         handleRenderLogingPage,
         handleRenderDashboardPage,
-        handleUserRegistration
+        handleUserRegistration,
+        handleUserLogin,
 
     }=require("../controllers/dynamicController")
 
+// middleware
+const {isLogedin}=require("../middleware/auth")
 
 
 
@@ -23,12 +26,16 @@ router.get("/login",handleRenderLogingPage);
 router.get("/register",handleRenderRegisterPage);
 
 //rendering dashboard page
-router.get("/dashboard",handleRenderDashboardPage)
+router.get("/dashboard",isLogedin,handleRenderDashboardPage)
 
 
 
 //user registration || user creation
 router.post("/register",handleUserRegistration);
+
+
+//User login
+router.post("/login",handleUserLogin)
 
 
 module.exports=router;
