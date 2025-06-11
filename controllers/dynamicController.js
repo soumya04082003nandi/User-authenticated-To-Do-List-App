@@ -7,7 +7,7 @@ const cookieParser = require("cookie-parser");
 
 //databases
 const userModels = require("../models/user");
-const taskModels = require("../models/task");
+const todoModels = require("../models/todo");
 
 //env file
 const dotenv = require("dotenv")
@@ -31,8 +31,11 @@ const handleRenderRegisterPage = async (req, res) => {
 
 //dashboard page
 const handleRenderDashboardPage = async (req, res) => {
-    const user=await userModels.findOne({email:req.user.email})
-    res.render("dashboard",{user});
+    const user = await userModels.findOne({ email: req.user.email });
+    const allTodo=await todoModels.find({userId:user._id})    ;
+    
+    
+    res.render("dashboard", { user ,allTodo});
 }
 
 //user creation || registration
@@ -109,11 +112,32 @@ const handleUserLogin = async (req, res) => {
 
 }
 
+//Todo creation
+const handleTodoCreation = async (req, res) => {
+    const user = await userModels.findOne({ email: req.user.email });
+    const {title,description,dueDate,priority} = req.body;
+    if (!title) {
+        
+        return res.render("dashboard", { message:"Can't creat empty todo !!", user});
+    } else {
+        const newTodo = new todoModels({
+            userId: user._id,
+            title,
+            description,
+            dueDate,
+            priority
+        })
+        
+        
+        await newTodo.save();
 
+        res.redirect("/dashboard");
+    }
+}
 
 //logout user
-const handleUserLogOut=(req,res)=>{
-    res.cookie("token","");
+const handleUserLogOut = (req, res) => {
+    res.cookie("token", "");
     res.redirect("/");
 }
 
@@ -125,4 +149,5 @@ module.exports = {
     handleUserRegistration,
     handleUserLogin,
     handleUserLogOut,
+    handleTodoCreation
 }

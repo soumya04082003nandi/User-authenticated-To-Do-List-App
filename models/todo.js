@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 
 const {Schema,model}=require("mongoose")
 
-const taskSchema = new mongoose.Schema({
+const todoSchema = new mongoose.Schema({
   userId: {
     type: mongoose.Schema.Types.ObjectId,
     ref: "User",
@@ -32,6 +32,6 @@ const taskSchema = new mongoose.Schema({
   }
 }, { timestamps: true });
 
-const taskModels= mongoose.model("Task", taskSchema);
+const todoModels= mongoose.model("Todo", todoSchema);
 
-module.exports =taskModels;
+module.exports =todoModels;

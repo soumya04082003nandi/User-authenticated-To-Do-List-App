@@ -9,6 +9,7 @@ const {handleRenderLandingPage,
         handleUserRegistration,
         handleUserLogin,
         handleUserLogOut,
+        handleTodoCreation
 
     }=require("../controllers/dynamicController")
 
@@ -34,9 +35,12 @@ router.get("/dashboard",isLogedin,handleRenderDashboardPage)
 //user registration || user creation
 router.post("/register",handleUserRegistration);
 
-
 //User login
 router.post("/login",handleUserLogin)
+
+
+//todo creation
+router.post("/creattodo",isLogedin,handleTodoCreation)
 
 
 
