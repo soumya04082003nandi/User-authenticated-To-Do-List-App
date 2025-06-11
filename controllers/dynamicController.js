@@ -45,7 +45,7 @@ const handleUserRegistration = async (req, res) => {
         // Check if user already exists
         const checkUser = await userModels.findOne({ email });
         if (checkUser) {
-            return res.status(400).render("register", { user: 1 });
+            return res.status(400).render("register", { user: "present" });
         } else {
 
             // Hash password
@@ -110,6 +110,11 @@ const handleUserLogin = async (req, res) => {
 
 
 
+//logout user
+const handleUserLogOut=(req,res)=>{
+    res.cookie("token","");
+    res.redirect("/");
+}
 
 module.exports = {
     handleRenderLandingPage,
@@ -117,5 +122,6 @@ module.exports = {
     handleRenderLogingPage,
     handleRenderDashboardPage,
     handleUserRegistration,
-    handleUserLogin
+    handleUserLogin,
+    handleUserLogOut,
 }

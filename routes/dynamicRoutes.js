@@ -8,6 +8,7 @@ const {handleRenderLandingPage,
         handleRenderDashboardPage,
         handleUserRegistration,
         handleUserLogin,
+        handleUserLogOut,
 
     }=require("../controllers/dynamicController")
 
@@ -37,5 +38,9 @@ router.post("/register",handleUserRegistration);
 //User login
 router.post("/login",handleUserLogin)
 
+
+
+//LOgout user
+router.get("/logout",handleUserLogOut)
 
 module.exports=router;
