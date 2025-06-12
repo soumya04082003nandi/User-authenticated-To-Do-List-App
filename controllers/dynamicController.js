@@ -135,6 +135,18 @@ const handleTodoCreation = async (req, res) => {
     }
 }
 
+
+//todo deletion
+const handleDeleteTodo = async (req, res) => {
+    try {
+        await todoModels.findByIdAndDelete(req.params.id);
+        res.redirect("/dashboard");
+    } catch (error) {
+        console.error("Error deleting todo:", error);
+        res.status(500).send("Something went wrong");
+    }
+}
+
 //logout user
 const handleUserLogOut = (req, res) => {
     res.cookie("token", "");
@@ -149,5 +161,6 @@ module.exports = {
     handleUserRegistration,
     handleUserLogin,
     handleUserLogOut,
-    handleTodoCreation
+    handleTodoCreation,
+    handleDeleteTodo,
 }
