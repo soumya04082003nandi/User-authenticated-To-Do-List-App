@@ -10,7 +10,8 @@ const {handleRenderLandingPage,
         handleUserLogin,
         handleUserLogOut,
         handleTodoCreation,
-        handleDeleteTodo
+        handleDeleteTodo,
+        handleMarkAsCompeleteTodo
 
     }=require("../controllers/dynamicController")
 
@@ -43,9 +44,14 @@ router.post("/login",handleUserLogin)
 //todo creation
 router.post("/creattodo",isLogedin,handleTodoCreation)
 
+//todo mark as compelete
+router.get("/markcompleted/:id", isLogedin,handleMarkAsCompeleteTodo)
+
+
 
 //todo deletion
 router.get("/delete/:id",isLogedin,handleDeleteTodo);
+
 
 
 

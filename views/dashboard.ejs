@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 
 <head>
   <meta charset="UTF-8" />
@@ -46,37 +46,172 @@
       </form>
     </div>
 
+
+
+
+    <!-- Filter Buttons -->
+    <div class="flex justify-center gap-4 mb-6">
+      <a href="#todaystodo"
+        class="bg-blue-100 text-blue-700 px-4 py-2 rounded-md hover:bg-blue-200 transition text-sm font-medium">
+         Today's ToDo
+      </a>
+      <a href="#upcomming_todo"
+        class="bg-yellow-100 text-yellow-700 px-4 py-2 rounded-md hover:bg-yellow-200 transition text-sm font-medium">
+         Upcoming ToDo
+      </a>
+      <a href="#compeleted_todo"
+        class="bg-green-100 text-green-700 px-4 py-2 rounded-md hover:bg-green-200 transition text-sm font-medium">
+         Completed ToDo
+      </a>
+    </div>
+
+
     <!-- Task List -->
     <div class="space-y-4" id="taskList">
-      <!--  Task Card -->
+      <!-- task that has due date of today -->
+      <h3 id="todaystodo" class="  bg-blue-100 text-blue-700 px-4 py-2 rounded-md hover:bg-blue-200 transition text-sm font-medium">Today's Todo <span class="ml-5 text-black "><%= todayTodo.length %></span></h3>
+      <div class="todays-todo">
+        <% todayTodo.reverse().forEach(todo=> { %>
+        <div class="bg-white p-4 mb-5 rounded-lg shadow-md flex justify-between items-start 
+          <%= todo.completed ? 'border-l-4 border-green-400 bg-green-50' : '' %>">
 
-      <% allTodo.reverse().forEach(todo=> { %>
-        <div class="bg-white p-4 rounded-lg shadow-md flex justify-between items-start">
           <div>
-            <div class="w-full   flex gap-10 ">
-              <h4 class="font-bold  text-black">
+            <div class="w-full flex gap-6 items-center">
+              <h4 class="font-bold <%= todo.completed ? 'line-through text-gray-400' : 'text-black' %>">
                 <%= todo.title %>
               </h4>
-              <p class="w-[30] text-sm">status: <%=  (todo.completed == false)? ("pending"):("compeleted")  %> </p>
+              <p class="text-sm">
+                Status:
+                <span class="<%= todo.completed ? 'text-green-600 font-semibold' : 'text-yellow-600' %>">
+                  <%= todo.completed ? 'Completed ' : 'Pending' %>
+                </span>
+              </p>
             </div>
 
-            <p class="text-sm text-gray-600">
+            <p class="text-sm text-gray-600 <%= todo.completed ? 'opacity-70' : '' %>">
               <%= todo.description %>
             </p>
-            <p class="text-xs mt-1 text-gray-500">Due: <%= new Date(todo.dueDate).toDateString().slice(0, 10) %> •
+            <p class="text-xs mt-1 text-gray-500">
+              Due: <%= new Date(todo.dueDate).toDateString().slice(0, 10) %> •
                 Priority: <%= todo.priority %>
             </p>
           </div>
-          <div class="flex flex-col gap-2 text-sm">
-            <a href="/edit " class="text-blue-600 hover:underline">Edit</a>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col gap-2 text-sm text-right">
+            <a href="/edit" class="text-blue-600 hover:underline">Edit</a>
             <a href="/delete/<%= todo._id %>" class="text-red-600 hover:underline">Delete</a>
 
+            <% if (!todo.completed) { %>
+              <a href="/markcompleted/<%= todo._id %>"
+                class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-green-200 transition">
+                Mark Completed
+              </a>
+              <% } else { %>
+                <span class="text-green-500 font-medium"> Completed</span>
+                <% } %>
           </div>
         </div>
+        <% }) %>
+      </div>
 
+
+      <!-- task that are upcomming -->
+      <h3 id="upcomming_todo" class="  bg-yellow-100 text-yellow-700 px-4 py-2 rounded-md hover:bg-yellow-200 transition text-sm font-medium"> Upcoming ToDo<span class="ml-5 text-black "><%= upcomingTodo.length %></span></h3>
+      <div class="upcomming_todo ">
+        <% upcomingTodo.reverse().forEach(todo=> { %>
+        <div class="bg-white p-4 mb-5 rounded-lg shadow-md flex justify-between items-start 
+          <%= todo.completed ? 'border-l-4 border-green-400 bg-green-50' : '' %>">
+
+          <div>
+            <div class="w-full flex gap-6 items-center">
+              <h4 class="font-bold <%= todo.completed ? 'line-through text-gray-400' : 'text-black' %>">
+                <%= todo.title %>
+              </h4>
+              <p class="text-sm">
+                Status:
+                <span class="<%= todo.completed ? 'text-green-600 font-semibold' : 'text-yellow-600' %>">
+                  <%= todo.completed ? 'Completed ' : 'Pending' %>
+                </span>
+              </p>
+            </div>
+
+            <p class="text-sm text-gray-600 <%= todo.completed ? 'opacity-70' : '' %>">
+              <%= todo.description %>
+            </p>
+            <p class="text-xs mt-1 text-gray-500">
+              Due: <%= new Date(todo.dueDate).toDateString().slice(0, 10) %> •
+                Priority: <%= todo.priority %>
+            </p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col gap-2 text-sm text-right">
+            <a href="/edit" class="text-blue-600 hover:underline">Edit</a>
+            <a href="/delete/<%= todo._id %>" class="text-red-600 hover:underline">Delete</a>
+
+            <% if (!todo.completed) { %>
+              <a href="/markcompleted/<%= todo._id %>"
+                class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-green-200 transition">
+                Mark Completed
+              </a>
+              <% } else { %>
+                <span class="text-green-500 font-medium"> Completed</span>
+                <% } %>
+          </div>
+        </div>
         <% }) %>
 
+      </div>
 
+
+      <!-- compeleted task -->
+      <h3 id="compeleted_todo" class=" bg-green-100 text-green-700 px-4 py-2 rounded-md hover:bg-green-200 transition text-sm font-medium"> Compeleted ToDo<span class="ml-5 text-black "><%= completedTodo.length %></span></h3>
+      <div class="compeleted_todo ">
+        <% completedTodo.reverse().forEach(todo=> { %>
+        <div class="bg-white p-4 mb-5 rounded-lg shadow-md flex justify-between items-start 
+          <%= todo.completed ? 'border-l-4 border-green-400 bg-green-50' : '' %>">
+
+          <div>
+            <div class="w-full flex gap-6 items-center">
+              <h4 class="font-bold <%= todo.completed ? 'line-through text-gray-400' : 'text-black' %>">
+                <%= todo.title %>
+              </h4>
+              <p class="text-sm">
+                Status:
+                <span class="<%= todo.completed ? 'text-green-600 font-semibold' : 'text-yellow-600' %>">
+                  <%= todo.completed ? 'Completed ' : 'Pending' %>
+                </span>
+              </p>
+            </div>
+
+            <p class="text-sm text-gray-600 <%= todo.completed ? 'opacity-70' : '' %>">
+              <%= todo.description %>
+            </p>
+            <p class="text-xs mt-1 text-gray-500">
+              Due: <%= new Date(todo.dueDate).toDateString().slice(0, 10) %> •
+                Priority: <%= todo.priority %>
+            </p>
+          </div>
+
+          <!-- Action Buttons -->
+          <div class="flex flex-col gap-2 text-sm text-right">
+            <a href="/edit" class="text-blue-600 hover:underline">Edit</a>
+            <a href="/delete/<%= todo._id %>" class="text-red-600 hover:underline">Delete</a>
+
+            <% if (!todo.completed) { %>
+              <a href="/markcompleted/<%= todo._id %>"
+                class="bg-green-100 text-green-700 px-3 py-1 rounded-md text-sm font-medium hover:bg-green-200 transition">
+                Mark Completed
+              </a>
+              <% } else { %>
+                <span class="text-green-500 font-medium"> Completed</span>
+                <% } %>
+          </div>
+        </div>
+        <% }) %>
+
+      </div>
 
     </div>
   </main>

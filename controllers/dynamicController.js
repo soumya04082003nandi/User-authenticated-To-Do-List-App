@@ -31,12 +31,52 @@ const handleRenderRegisterPage = async (req, res) => {
 
 //dashboard page
 const handleRenderDashboardPage = async (req, res) => {
-    const user = await userModels.findOne({ email: req.user.email });
-    const allTodo=await todoModels.find({userId:user._id})    ;
-    
-    
-    res.render("dashboard", { user ,allTodo});
-}
+  const user = await userModels.findOne({ email: req.user.email });
+
+  const startOfDay = new Date();
+  startOfDay.setHours(0, 0, 0, 0);
+
+  const endOfDay = new Date();
+  endOfDay.setHours(23, 59, 59, 999);
+
+  // ✅ Today's Todo (due today + not completed)
+  const todayTodo = await todoModels.find({
+    userId: user._id,
+    completed: false,
+    dueDate: {
+      $gte: startOfDay,
+      $lte: endOfDay
+    }
+  });
+
+  // ✅ Upcoming Todo (due after today + not completed)
+  const tomorrow = new Date();
+  tomorrow.setHours(0, 0, 0, 0);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+
+  const upcomingTodo = await todoModels.find({
+    userId: user._id,
+    completed: false,
+    dueDate: {
+      $gte: tomorrow
+    }
+  });
+
+  // ✅ Completed Todo
+  const completedTodo = await todoModels.find({
+    userId: user._id,
+    completed: true
+  });
+
+
+
+  res.render("dashboard", { 
+    user, 
+    todayTodo, 
+    upcomingTodo, 
+    completedTodo, 
+  });
+};
 
 //user creation || registration
 const handleUserRegistration = async (req, res) => {
@@ -115,10 +155,10 @@ const handleUserLogin = async (req, res) => {
 //Todo creation
 const handleTodoCreation = async (req, res) => {
     const user = await userModels.findOne({ email: req.user.email });
-    const {title,description,dueDate,priority} = req.body;
+    const { title, description, dueDate, priority } = req.body;
     if (!title) {
-        
-        return res.render("dashboard", { message:"Can't creat empty todo !!", user});
+
+        return res.render("dashboard", { message: "Can't creat empty todo !!", user });
     } else {
         const newTodo = new todoModels({
             userId: user._id,
@@ -127,8 +167,8 @@ const handleTodoCreation = async (req, res) => {
             dueDate,
             priority
         })
-        
-        
+
+
         await newTodo.save();
 
         res.redirect("/dashboard");
@@ -147,6 +187,20 @@ const handleDeleteTodo = async (req, res) => {
     }
 }
 
+//todo marked as compeleted
+const handleMarkAsCompeleteTodo = async (req, res) => {
+    try {
+        await todoModels.findByIdAndUpdate(req.params.id, { completed: true });
+        res.redirect("/dashboard");
+    } catch (err) {
+        console.error("Error marking completed:", err);
+        res.status(500).send("Error updating task");
+    }
+}
+
+
+
+
 //logout user
 const handleUserLogOut = (req, res) => {
     res.cookie("token", "");
@@ -163,4 +217,5 @@ module.exports = {
     handleUserLogOut,
     handleTodoCreation,
     handleDeleteTodo,
+    handleMarkAsCompeleteTodo
 }
