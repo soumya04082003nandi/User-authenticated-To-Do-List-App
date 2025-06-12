@@ -6,10 +6,12 @@ const {handleRenderLandingPage,
         handleRenderRegisterPage,
         handleRenderLogingPage,
         handleRenderDashboardPage,
+        handleRenderEditPage,
         handleUserRegistration,
         handleUserLogin,
         handleUserLogOut,
         handleTodoCreation,
+        handleUpdateTodo,
         handleDeleteTodo,
         handleMarkAsCompeleteTodo
 
@@ -47,10 +49,14 @@ router.post("/creattodo",isLogedin,handleTodoCreation)
 //todo mark as compelete
 router.get("/markcompleted/:id", isLogedin,handleMarkAsCompeleteTodo)
 
-
+//edit todo
+router.get("/edit/:id",isLogedin,handleRenderEditPage);
+router.post("/update/:id",isLogedin,handleUpdateTodo)
 
 //todo deletion
 router.get("/delete/:id",isLogedin,handleDeleteTodo);
+
+
 
 
 

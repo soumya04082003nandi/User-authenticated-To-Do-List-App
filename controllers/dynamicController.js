@@ -31,52 +31,60 @@ const handleRenderRegisterPage = async (req, res) => {
 
 //dashboard page
 const handleRenderDashboardPage = async (req, res) => {
-  const user = await userModels.findOne({ email: req.user.email });
+    const user = await userModels.findOne({ email: req.user.email });
 
-  const startOfDay = new Date();
-  startOfDay.setHours(0, 0, 0, 0);
+    const startOfDay = new Date();
+    startOfDay.setHours(0, 0, 0, 0);
 
-  const endOfDay = new Date();
-  endOfDay.setHours(23, 59, 59, 999);
+    const endOfDay = new Date();
+    endOfDay.setHours(23, 59, 59, 999);
 
-  // ✅ Today's Todo (due today + not completed)
-  const todayTodo = await todoModels.find({
-    userId: user._id,
-    completed: false,
-    dueDate: {
-      $gte: startOfDay,
-      $lte: endOfDay
-    }
-  });
+    // ✅ Today's Todo (due today + not completed)
+    const todayTodo = await todoModels.find({
+        userId: user._id,
+        completed: false,
+        dueDate: {
+            $gte: startOfDay,
+            $lte: endOfDay
+        }
+    });
 
-  // ✅ Upcoming Todo (due after today + not completed)
-  const tomorrow = new Date();
-  tomorrow.setHours(0, 0, 0, 0);
-  tomorrow.setDate(tomorrow.getDate() + 1);
+    // ✅ Upcoming Todo (due after today + not completed)
+    const tomorrow = new Date();
+    tomorrow.setHours(0, 0, 0, 0);
+    tomorrow.setDate(tomorrow.getDate() + 1);
 
-  const upcomingTodo = await todoModels.find({
-    userId: user._id,
-    completed: false,
-    dueDate: {
-      $gte: tomorrow
-    }
-  });
+    const upcomingTodo = await todoModels.find({
+        userId: user._id,
+        completed: false,
+        dueDate: {
+            $gte: tomorrow
+        }
+    });
 
-  // ✅ Completed Todo
-  const completedTodo = await todoModels.find({
-    userId: user._id,
-    completed: true
-  });
+    // ✅ Completed Todo
+    const completedTodo = await todoModels.find({
+        userId: user._id,
+        completed: true
+    });
 
 
 
-  res.render("dashboard", { 
-    user, 
-    todayTodo, 
-    upcomingTodo, 
-    completedTodo, 
-  });
+    res.render("dashboard", {
+        user,
+        todayTodo,
+        upcomingTodo,
+        completedTodo,
+    });
 };
+
+//render edit page
+const handleRenderEditPage = async (req, res) => {
+    const user = await userModels.findOne({ email: req.user.email });
+    const updatetodo = await todoModels.findById(req.params.id);
+
+    res.render("edittodo", { user, updatetodo })
+}
 
 //user creation || registration
 const handleUserRegistration = async (req, res) => {
@@ -198,6 +206,29 @@ const handleMarkAsCompeleteTodo = async (req, res) => {
     }
 }
 
+//edit feature
+const handleUpdateTodo = async (req, res) => {
+  try {
+    const user = await userModels.findOne({ email: req.user.email });
+
+    const { title, description, dueDate, priority } = req.body;
+
+    if (!title) {
+      return res.render("dashboard", { message: "Can't create empty todo !!", user });
+    }
+
+    await todoModels.findOneAndUpdate(
+      { _id: req.params.id, userId: user._id }, // filter
+      { $set: { title, description, dueDate, priority } }, // update
+      { new: true, runValidators: true } // options
+    );
+
+    res.redirect("/dashboard");
+  } catch (error) {
+    console.error("Update Error:", error);
+    res.status(500).send("Server error");
+  }
+};
 
 
 
@@ -212,10 +243,13 @@ module.exports = {
     handleRenderRegisterPage,
     handleRenderLogingPage,
     handleRenderDashboardPage,
+    handleRenderEditPage,
     handleUserRegistration,
     handleUserLogin,
     handleUserLogOut,
     handleTodoCreation,
+    handleUpdateTodo,
     handleDeleteTodo,
-    handleMarkAsCompeleteTodo
+    handleMarkAsCompeleteTodo,
+
 }
