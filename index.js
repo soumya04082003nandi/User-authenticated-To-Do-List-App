@@ -2,6 +2,7 @@ const express=require("express");
 const app=express();
 const path=require("path")
 const allRoutes=require("./routes/dynamicRoutes")
+const summaryRoutes=require("./routes/summaryRoutes")
 const {conectDB}=require("./config/db")
 const cookieParser=require("cookie-parser");
 
@@ -33,7 +34,7 @@ app.use(cookieParser())
 //routes
 
 app.use("/",allRoutes);
-
+app.use("/summary",summaryRoutes);
 
 
 

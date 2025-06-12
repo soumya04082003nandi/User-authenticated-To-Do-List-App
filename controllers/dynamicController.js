@@ -198,7 +198,7 @@ const handleDeleteTodo = async (req, res) => {
 //todo marked as compeleted
 const handleMarkAsCompeleteTodo = async (req, res) => {
     try {
-        await todoModels.findByIdAndUpdate(req.params.id, { completed: true });
+        await todoModels.findByIdAndUpdate(req.params.id, { completed: true , completedAt:new Date()});
         res.redirect("/dashboard");
     } catch (err) {
         console.error("Error marking completed:", err);
@@ -206,7 +206,7 @@ const handleMarkAsCompeleteTodo = async (req, res) => {
     }
 }
 
-//edit feature
+//edit feature updating the existing todo
 const handleUpdateTodo = async (req, res) => {
   try {
     const user = await userModels.findOne({ email: req.user.email });
