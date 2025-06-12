@@ -11,7 +11,23 @@ const userModels = require("../models/user");
 
 // Render Summary Page
 const handleRenderSummaryPage = async (req, res) => {
-    res.render("summary", { summary: null, message: null });
+    try {
+        const user = await userModels.findOne({ email: req.user.email });
+        const allSummary = await summaryModels.find({ userId: user._id }).sort({ date: -1 });
+
+        res.render("summary", {
+            summary: null,
+            message: null,
+            history: allSummary
+        });
+    } catch (err) {
+        console.error("Error rendering summary page:", err);
+        res.render("summary", {
+            summary: null,
+            message: "Failed to load summary page.",
+            history: []
+        });
+    }
 };
 
 // Generate Summary using DeepSeek via OpenRouter
@@ -20,34 +36,34 @@ const handleGenerateSummary = async (req, res) => {
         const user = await userModels.findOne({ email: req.user.email });
         const userId = user._id;
 
-        // Define today's UTC time range
         const now = new Date();
         const startOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 0, 0, 0));
         const endOfToday = new Date(Date.UTC(now.getUTCFullYear(), now.getUTCMonth(), now.getUTCDate(), 23, 59, 59, 999));
 
-        // Fetch completed todos
+        // Get today's completed tasks
         const completedTodos = await todoModels.find({
             userId,
             completed: true,
             completedAt: { $gte: startOfToday, $lte: endOfToday }
         });
 
+        const allSummary = await summaryModels.find({ userId }).sort({ date: -1 });
+
         if (completedTodos.length === 0) {
             return res.render("summary", {
                 summary: null,
-                message: "No completed tasks found today."
+                message: "No completed tasks found today.",
+                history: allSummary
             });
         }
 
-        // Prepare the prompt with only titles
         const taskList = completedTodos.map((todo, i) => `${i + 1}. ${todo.title}`).join("\n");
         const prompt = `Summarize the following tasks I completed today:\n${taskList}`;
 
-        // Send request to OpenRouter (DeepSeek model)
         const response = await axios.post(
             "https://openrouter.ai/api/v1/chat/completions",
             {
-                 model: "deepseek/deepseek-r1-0528:free",
+                model: "deepseek/deepseek-r1-0528:free",
                 messages: [
                     { role: "system", content: "You are a helpful assistant that summarizes completed tasks clearly." },
                     { role: "user", content: prompt }
@@ -58,32 +74,42 @@ const handleGenerateSummary = async (req, res) => {
                 headers: {
                     Authorization: `Bearer ${process.env.OPENROUTER_API_KEY}`,
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "http://localhost:3000" // 🔁 Update if hosted elsewhere
+                    "HTTP-Referer": "http://localhost:3000"
                 }
             }
         );
-        
 
         const summaryText = response.data.choices[0].message.content;
 
-        // Save the summary
-        await summaryModels.create({
-            userId,
-            summary: summaryText,
-            date: new Date()
-        });
+        // Check for existing summary and update if found
+        const existingSummary = await summaryModels.findOneAndUpdate(
+            { userId, date: { $gte: startOfToday, $lte: endOfToday } },
+            { summary: summaryText },
+            { new: true }
+        );
 
-        // Render summary page
+        if (!existingSummary) {
+            await summaryModels.create({
+                userId,
+                summary: summaryText,
+                date: new Date()
+            });
+        }
+
+        const updatedSummary = await summaryModels.find({ userId }).sort({ date: -1 });
+
         res.render("summary", {
             summary: summaryText,
-            message: null
+            message: null,
+            history: updatedSummary
         });
 
     } catch (error) {
         console.error("Error generating summary:", error.response?.data || error.message);
         res.render("summary", {
             summary: null,
-            message: "Something went wrong while generating the summary."
+            message: "Something went wrong while generating the summary.",
+            history: []
         });
     }
 };
