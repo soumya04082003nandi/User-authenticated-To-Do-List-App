@@ -73,8 +73,9 @@
                         <div class="bg-white p-4 rounded-lg shadow-sm border border-gray-200">
                             <p class="text-sm text-gray-500 mb-2">
                                 🗓️ <%= new Date(item.date).toLocaleDateString('en-IN', { day: 'numeric' ,
-                                    month: 'short' , year: 'numeric' }) %>
+                                    month: 'short' , year: 'numeric' , timeZone: 'UTC' }) %>
                             </p>
+
                             <pre class="whitespace-pre-wrap text-gray-700"><%= item.summary %></pre>
                         </div>
                         <% }) %>
