@@ -1,0 +1,10 @@
+
+
+services:
+  backend:
+    build: .
+    container_name: todo-backend
+    ports:
+      - "3000:3000"   # Since your app runs on 3000
+    env_file:
+      - .env
