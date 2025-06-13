@@ -23,7 +23,6 @@ app.set("views",path.resolve("./views"));
 
 //USES
 app.use(express.static('public'));
-
 app.use(express.json());
 app.use(express.urlencoded({extended:false}));
 app.use(cookieParser())
@@ -36,15 +35,6 @@ app.use(cookieParser())
 
 app.use("/",allRoutes);
 app.use("/summary",summaryRoutes);
-
-
-
-
-
-
-
-
-
 
 
 

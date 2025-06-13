@@ -93,8 +93,8 @@ const handleUserRegistration = async (req, res) => {
         const { name, email, password, confirmPassword } = req.body
         if (password != confirmPassword) {
             res.render("register", { password: "missmatched" })
-        }
-        // Check if user already exists
+        }else{
+            // Check if user already exists
         const checkUser = await userModels.findOne({ email });
         if (checkUser) {
             return res.status(400).render("register", { user: "present" });
@@ -123,6 +123,8 @@ const handleUserRegistration = async (req, res) => {
 
 
 
+        }
+        
     } catch (error) {
         return res.status(500).send("Server error during registration");
 
